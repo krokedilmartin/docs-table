@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON to Pretty Table</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  tr:hover {
+    background-color: #f5f5f5;
+  }
+</style>
+</head>
+<body>
+
+<div id="jsonTable">loading</div>
+
+<script>
+    // Assuming the fetchData function is defined here (or you have the fetch block that gets the data)
+  
+    // Filter keys variable - define which columns to display
+    const filterKeys = ["", "Avarda Checkout"]; // Adjust this array based on the columns you want to display
+  
+    function buildTable(data, filterKeys) {
+      let table = '<table><tr>';
+      
+      // Checking if first row exists to avoid errors
+      if (data.length === 0) {
+        return '<p>No data available.</p>';
+      }
+  
+      // Extracting headers based on filterKeys
+      filterKeys.forEach(key => {
+        table += `<th>${key}</th>`;
+      });
+      table += '</tr>';
+  
+      // Inserting rows with filtered data
+      data.forEach(row => {
+        table += '<tr>';
+        filterKeys.forEach(key => {
+          const value = row[key] !== undefined ? row[key] : ''; // Checking if the key exists in the row
+          table += `<td>${value}</td>`;
+        });
+        table += '</tr>';
+      });
+  
+      table += '</table>';
+      return table;
+    }
+  
+    // Example: Fetching and then displaying the data (assuming jsonData is fetched or statically defined)
+    fetch('https://script.googleusercontent.com/a/macros/krokedil.se/echo?user_content_key=hadL2qBpDsW6qFAQ5w7InSxwMsKj9QAVlB6Fg0__5_z2RXedypvBevL3VWw5uiI7AiCtwU9_09e1wscuefLNStoGhioso_dFOJmA1Yb3SEsKFZqtv3DaNYcMrmhZHmUMi80zadyHLKBcOLqoOVr1sxdA7wPMa3ooh0lmODcuY_32lGD3QAjYUp0ebHgA-5Y44mTYxmfaMqGhRX1cZmPOIwL2mPSGkGEPV8Tmven-5lXyifGudrifkq9ReFBYrLfumO6mlEAA-7w&lib=MK8k-cUaGCWQEI0aCdcyMSXpWrtV8xR4b')
+      .then(response => response.json())
+      .then(jsonData => {
+        // Rendering the filtered table in the div
+        document.getElementById('jsonTable').innerHTML = buildTable(jsonData, filterKeys);
+      })
+      .catch(error => {
+        console.error('Error fetching data: ', error);
+        document.getElementById('jsonTable').innerHTML = '<p>Error loading data...</p>';
+      });
+  </script>
+    
+  
+
+</body>
+</html>
